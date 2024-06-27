@@ -32,14 +32,6 @@ class Task1(Task):
             return False
         
 @register(depends_on=BaseTask)
-class Task2(Task):
-    def perform_task(self):
-        print("Task2 completed successfully")
-
-    def retry_handler(self, error):
-        return False
-        
-@register(depends_on=BaseTask)
 class AlwaysFailsTask(Task):
     @skippable
     @retries(3)
@@ -49,6 +41,14 @@ class AlwaysFailsTask(Task):
     
     def retry_handler(self, error):
         return True
+        
+@register(depends_on=AlwaysFailsTask)
+class Task2(Task):
+    def perform_task(self):
+        print("Task2 completed successfully")
+
+    def retry_handler(self, error):
+        return False
 
 
 if __name__ == "__main__":

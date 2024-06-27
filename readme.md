@@ -9,7 +9,12 @@ Tasks are single units of work that can perform a wide variety of operations. Th
 
 By default, `retry_handler()` returns False, which will propagate any exceptions and stop the pipeline. If a task might fail intermittently (e.g., due to temporarily unavailable resources), the `retry_handler()` can be customized with logic to handle such scenarios (return True). When used with the retries(n) decorator, the task will be retried up to n times before the pipeline fails.
 
-To register a task, use the @register decorator. This allows specifying dependencies on other tasks, ensuring the pipeline executes tasks in the correct order.
+To register a task, use the `@register` decorator. This allows specifying dependencies on other tasks, ensuring the pipeline executes tasks in the correct order.
+
+```
+@register(depends_on=Task1)
+def Task2()...
+```
 
 If a particular task failure should not stop the entire pipeline, it can be decorated with `@skippable`.
 

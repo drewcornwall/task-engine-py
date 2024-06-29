@@ -35,7 +35,11 @@ class AlwaysFailsTask(Task):
 
 ## Examples
 
-example.py contains four tasks:
+Examples can be run like so: `python run_examples.py <example_module_name>`
+
+
+### tasks
+tasks example contains four tasks:
 
 - BaseTask: Prints a message.
 - Task1: Simulates an HTTP call that randomly returns a 200, 500, or 401 error code. It gracefully handles 500 errors by retrying up to 3 times, but it stops the pipeline if a 401 error is encountered.
@@ -46,7 +50,7 @@ The DAG is as follows: BaseTask -> Task1 -> AlwaysFailsTask -> Task2
 
 Example runs:
 
-Run 1 (no Terminating errors encountered, single retry occurs on 500)
+Run 1 (no terminating errors encountered, single retry occurs on 500)
 ```
 Executing BaseTask
 Hello!
@@ -62,7 +66,7 @@ Executing Task2
 Task2 completed successfully
 ```
 
-Run2 (Pipeline terminating error encountered, 500 followed by a 401 on retry)
+Run 2 (Pipeline terminating error encountered, 500 followed by a 401 on retry)
 ```
 Executing BaseTask
 Hello!
@@ -73,4 +77,23 @@ Traceback (most recent call last):
   File "/Users/yaroslav.berejnoi/Workspace/yarobear/task-engine/example.py", line 56,
   ... raise Exception("Error 401")
 Exception: Error 401
+```
+
+### jobs
+
+Jobs are simply composed into modules of tasks. Tasks can have cross job-task dependencies, and the pipeline executor will ensure jobs are executed in the correct order.
+
+The DAG is as follows: Job2Task1 -> Job2Task2 -> Job1Task1 -> Job1Task2
+
+Example run:
+
+```
+Executing Job2Task1
+Hello from Job2, Task1!
+Executing Job2Task2
+Hello from Job2, Task2!
+Executing Job1Task1
+Hello from Job1, Task1!
+Executing Job1Task2
+Hello from Job1, Task2!
 ```

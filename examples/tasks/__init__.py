@@ -5,9 +5,10 @@ from engine import Task, PipelineExecutor, register, retries, skippable
 class BaseTask(Task):
     def perform_task(self):
         print("Hello!")
-    
+
     def retry_handler(self, error):
         return False
+
 
 @register(depends_on=BaseTask)
 class Task1(Task):
@@ -24,13 +25,14 @@ class Task1(Task):
         elif response_code == 401:
             print("Task1 failed with error 401, no retries")
             raise Exception("Error 401")
-    
+
     def retry_handler(self, error):
         if "500" in str(error):
             return True
         if "401" in str(error):
             return False
-        
+
+
 @register(depends_on=BaseTask)
 class AlwaysFailsTask(Task):
     @skippable
@@ -38,10 +40,11 @@ class AlwaysFailsTask(Task):
     def perform_task(self):
         print("AlwaysFailsTask failed")
         raise Exception("AlwaysFailsTask failed")
-    
+
     def retry_handler(self, error):
         return True
-        
+
+
 @register(depends_on=AlwaysFailsTask)
 class Task2(Task):
     def perform_task(self):
@@ -51,7 +54,6 @@ class Task2(Task):
         return False
 
 
-if __name__ == "__main__":
+def run():
     executor = PipelineExecutor()
     executor.run()
-

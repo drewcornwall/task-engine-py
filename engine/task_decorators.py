@@ -12,6 +12,7 @@ def skippable(func):
             print(f"Skipping task due to error: {e}")
     return wrapper
 
+
 def retries(max_retries):
     """Decorator to retry a task a maximum number of times. retry_handler must return True to retry."""
     def decorator(func):

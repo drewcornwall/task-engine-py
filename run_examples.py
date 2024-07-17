@@ -3,4 +3,6 @@ import sys
 
 example = sys.argv[1] if len(sys.argv) > 1 else input("Enter example name: ")
 
-run_examples(example)
+
+if __name__ == "__main__":
+    run_examples(example)

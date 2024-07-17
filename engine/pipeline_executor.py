@@ -1,4 +1,6 @@
 from collections import defaultdict, deque
+import multiprocessing
+import time
 
 from reporters import plan_reporters
 
@@ -13,6 +15,8 @@ class PipelineExecutor:
         self.dependencies = tasks_dependencies
         self.execution_order = self.build_execution_order()
         self.report_plan()
+        self.executed_tasks = set()
+        self.lock = multiprocessing.Lock()
 
     def build_execution_order(self):
         in_degree = {key: 0 for key in self.tasks}
@@ -45,11 +49,31 @@ class PipelineExecutor:
         for reporter in plan_reporters:
             reporter.report(self.execution_order)
 
+    def run_task(self, task_name):
+        task = self.tasks[task_name]
+        print(f"Executing {task_name}")
+        task.perform_task()
+        with self.lock:
+            self.executed_tasks.add(task_name)
+
+    def can_run_task(self, task_name):
+        with self.lock:
+            return all(dep in self.executed_tasks for dep in self.dependencies[task_name]) # noqa E501
+
     def run(self):
-        for task_name in self.execution_order:
-            task = self.tasks[task_name]
-            print(f"Executing {task_name}")
-            task.perform_task()
+        pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+        pending_tasks = deque(self.execution_order)
+        results = []
+
+        while pending_tasks or any(not r.ready() for r in results):
+            while pending_tasks and self.can_run_task(pending_tasks[0]):
+                task_name = pending_tasks.popleft()
+                result = pool.apply_async(self.run_task, (task_name,))
+                results.append(result)
+            time.sleep(0.1)  # Brief sleep to avoid busy waiting
+
+        pool.close()
+        pool.join()
 
 
 def register(depends_on=None):

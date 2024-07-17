@@ -97,3 +97,31 @@ Hello from Job1, Task1!
 Executing Job1Task2
 Hello from Job1, Task2!
 ```
+
+# July 24-25 2024 HC Data Platform Hackathon
+
+Welcome! This section outlines some potential features that could be added to task-engine, and some use cases. Feel free to come up with features/use cases of your own!
+Have fun!
+
+Use cases:
+
+Features:
+
+- TaskContext
+  - At the start of a pipeline execution, we should be able to hydrate some read-only store of configuration values. These values form a TaskContext that is available to every task. e.g. reading url for an endpoint we need to hit, or key vault secrets.
+  - Bonus points: Store hydrators are registerable. By default, the store is hydrated from a local .yml file. Additional hydrators can be registered by client applications that override the default.
+
+- SensibleDefaults
+  - Create a SensibleDefaultsRequests module which has classes that extend Task. It will have sensible defaults on how to handle certain errors codes from the `requests` library. For example, 429(too many requests), we should retry 3 times, exponentially backing off (1 second, 2 seconds, 4 seconds) before failing.
+  - The goal is that users can extends this class instead of the base Task class, and get some sensible error handling automatically.
+
+- RateLimiter
+  - Use some kind of algorithm (Token Bucket e.g.) to keep track of how many requests per second are happening against certain endpoints. You can use the [Databricks API rate limits](https://docs.databricks.com/en/resources/limits.html#limits-api-rate-limits) as an example.
+  - If we are approaching the rate limit, add a delay to the task until more tokens becomes available (if using Token Bucket Algorithm)
+  - Ideally this would be a decorator `@rateLimit(key='/'jobs/runs/get')`. The key is used as a lookup in some global hash table to keep track of how many requests per second are being issues against the endpoint.
+
+- Parallelism
+  - Currently task-engine is single process, and executes all the tasks in the DAG sequentially. It would be great if we could execute the tasks in individual threads while respecting DAG dependencies.
+
+- Logging
+  - Hook up OpenTelemetry to collect logs. Register any exporter as an example (log file is fine). All tasks associated with a pipeline execution should be associated with the same trace id.

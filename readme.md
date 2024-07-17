@@ -120,6 +120,9 @@ Features:
   - If we are approaching the rate limit, add a delay to the task until more tokens becomes available (if using Token Bucket Algorithm)
   - Ideally this would be a decorator `@rateLimit(key='/'jobs/runs/get')`. The key is used as a lookup in some global hash table to keep track of how many requests per second are being issues against the endpoint.
 
+- Reporter
+  - Currently there is one reporter that logs the DAG to console before running. It would be great to have one that shows the current progress/state of execution, or output the DAG for graphiz/dot language, mermaid, html, or other graphing library.
+
 - Parallelism
   - Currently task-engine is single process, and executes all the tasks in the DAG sequentially. It would be great if we could execute the tasks in individual threads while respecting DAG dependencies.
 

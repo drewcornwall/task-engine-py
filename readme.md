@@ -111,6 +111,9 @@ Features:
   - At the start of a pipeline execution, we should be able to hydrate some read-only store of configuration values. These values form a TaskContext that is available to every task. e.g. reading url for an endpoint we need to hit, or key vault secrets.
   - Bonus points: Store hydrators are registerable. By default, the store is hydrated from a local .yml file. Additional hydrators can be registered by client applications that override the default.
 
+- WaitForResource
+  - Sometimes we have to wait for a resource to become available to configure it. Implement a hook that can wait for a resource up to a specified amount of time before firing performTask()
+
 - SensibleDefaults
   - Create a SensibleDefaultsRequests module which has classes that extend Task. It will have sensible defaults on how to handle certain errors codes from the `requests` library. For example, 429(too many requests), we should retry 3 times, exponentially backing off (1 second, 2 seconds, 4 seconds) before failing.
   - The goal is that users can extends this class instead of the base Task class, and get some sensible error handling automatically.
@@ -128,3 +131,8 @@ Features:
 
 - Logging
   - Hook up OpenTelemetry to collect logs. Register any exporter as an example (log file is fine). All tasks associated with a pipeline execution should be associated with the same trace id.
+
+- PriorityExecution (depends on Parallelism)
+  - Some tasks might take longer to execute than others. If these tasks have no dependencies or have their dependency met, move them to the front of the execution pipeline to shorten the length of overall pipeline execution.
+  - This feature requires runtime statistics to be collected and persisted (local file is fine) for every task and some re-balancing algorithm to run before pipeline execution or even after every task. If no statistics exist, in the case of a first run, no re-balancing happens.
+  - Max heap priority queue seems like a good DS for this.

@@ -13,6 +13,18 @@ def skippable(func):
     return wrapper
 
 
+def check_resource(is_resource_available):
+    """Decorator to check if resource is available."""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            if is_resource_available():
+                return func(*args, **kwargs)
+            else:
+                raise Exception("Resource not available")
+        return wrapper
+    return decorator
+
+
 def retries(max_retries):
     """Decorator to retry a task a maximum number of times. retry_handler must return True to retry."""
     def decorator(func):

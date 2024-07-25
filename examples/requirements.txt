@@ -1,0 +1,2 @@
+requests == 2.32.3
+../src/dist/task_engine-0.0.1.tar.gz

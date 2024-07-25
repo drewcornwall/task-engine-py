@@ -1,0 +1,21 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "task_engine"
+version = "0.0.1"
+authors = [
+]
+dependencies = [
+    "PyYAML>=6.0.1"
+]
+description = "Task Engine Hackathon"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.setuptools.packages.find]
+include = ['engine*', 'reporters*']

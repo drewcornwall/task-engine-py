@@ -33,9 +33,26 @@ class AlwaysFailsTask(Task):
         return True
 ```
 
+## Build locally
+
+Create a virtual environment in the src folder `python3 -m venv .venv`, and activate it.
+
+Run `python -m pip install --upgrade build` (just once)
+
+Run `pip install -r requirements.txt`
+
+And then `python -m build`.
+
+This will produce a package in src/dist.
+
+
 ## Examples
 
-Examples can be run like so: `python run_examples.py <example_module_name>`
+Examples are run standalone. Create a virtual environment in the examples folder `python3 -m venv .venv`, and activate it.
+
+Then run `pip install -r requirements.txt`
+
+From the examples folder, run the example `python tasks/__init__.py`
 
 
 ### tasks

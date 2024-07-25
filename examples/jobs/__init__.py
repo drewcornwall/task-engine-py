@@ -1,9 +1,8 @@
-from engine.pipeline_executor import PipelineExecutor
+from engine import PipelineExecutor
 
-from . import job_1
-from . import job_2
+import job_1, job_2
 
 
-def run():
+if __name__ == "__main__":
     executor = PipelineExecutor()
     executor.run()

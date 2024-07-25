@@ -1,5 +1,5 @@
 from engine import Task, register
-from examples.jobs.job_2 import Job2Task2
+from job_2 import Job2Task2
 
 
 @register()

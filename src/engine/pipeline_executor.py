@@ -1,14 +1,21 @@
 from collections import defaultdict, deque
+from typing import Dict
 
+from engine.config_provider import get_default_config_provider
 from reporters import plan_reporters
 
 
 tasks_registry = {}
 tasks_dependencies = defaultdict(list)
+context: Dict = dict()
+
+config_provider = get_default_config_provider()
+context.update(config_provider.get_config())
 
 
 class PipelineExecutor:
     def __init__(self):
+        self.config_provider = get_default_config_provider()
         self.tasks = tasks_registry
         self.dependencies = tasks_dependencies
         self.execution_order = self.build_execution_order()
@@ -59,7 +66,7 @@ def register(depends_on=None):
         if tasks_registry.get(key):
             raise Exception(f"Duplicate task name: {key}")
 
-        tasks_registry[key] = cls()
+        tasks_registry[key] = cls(context)
         if depends_on:
             tasks_dependencies[key].append(depends_on.__name__)
         return cls

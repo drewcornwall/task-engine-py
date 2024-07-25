@@ -54,6 +54,6 @@ class Task2(Task):
         return False
 
 
-def run():
+if __name__ == "__main__":
     executor = PipelineExecutor()
     executor.run()

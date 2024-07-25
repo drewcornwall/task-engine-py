@@ -1,0 +1,4 @@
+tenant_info:
+  entity_name: NewEntity
+  entity_type: materialized_view
+  tenant_url: https://api.example.com/tenants
